@@ -103,9 +103,9 @@ export default {
         series: [{
           name: '消费', itemStyle: {
             normal: {
-              color: 'FF005A',
+              color: '#E63F00 ',
               lineStyle: {
-                color: '#FF005A',
+                color: '#E63F00 ',
                 width: 2
               }
             }
@@ -122,9 +122,9 @@ export default {
           type: 'line',
           itemStyle: {
             normal: {
-              color: '#3888fa',
+              color: '#00DD00',
               lineStyle: {
-                color: '#3888fa',
+                color: '#00DD00',
                 width: 2
               },
               areaStyle: {
