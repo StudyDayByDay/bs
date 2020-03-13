@@ -13,6 +13,7 @@ import tableRouter from './modules/table'
 import nestedRouter from './modules/nested'
 import backStageRouter from './modules/backStage'
 import consumptionRouter from './modules/consumption'
+import bookRouter from './modules/book'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -193,6 +194,7 @@ export const asyncRoutes = [
   tableRouter,
   backStageRouter,
   consumptionRouter,
+  bookRouter,
 
   {
     path: '/example',
