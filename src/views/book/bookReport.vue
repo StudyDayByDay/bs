@@ -63,7 +63,7 @@ const tableData = {
 }
 
 export default {
-  name: 'DashboardAdmin',
+  name: 'BookReport',
   components: {
     PanelGroup,
     LineChart
@@ -78,8 +78,29 @@ export default {
     }
   },
   methods: {
+    created() {
+      alert('sdkjskj')
+    },
     handleSetTableChartData(type) {
-      this.tableData = tableData[type]
+      if (type !== 'jumpRouter') {
+        this.tableData = tableData[type]
+      } else {
+        this.$prompt('请输入查询的书名', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /[\u4e00-\u9fa5]/,
+          inputErrorMessage: '书名格式不正确'
+        }).then(({ value }) => {
+          // this.$router.push({ path: '/book/borrow', query: { bookId: value }})
+          // 由于动态路由也是传递params的，所以在 this.$router.push() 方法中path不能和params一起使用，否则params将无效。需要用name来指定页面。
+          this.$router.push({ name: 'Borrow', params: { bookId: value }})
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          })
+        })
+      }
     },
     // 这里到时候做一个linechart的mock，把数据请求进来
     popUp(month) {
