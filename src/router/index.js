@@ -15,6 +15,7 @@ import backStageRouter from './modules/backStage'
 import consumptionRouter from './modules/consumption'
 import bookRouter from './modules/book'
 import siteRouter from './modules/site'
+import gradeRouter from './modules/grade'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -197,6 +198,7 @@ export const asyncRoutes = [
   consumptionRouter,
   bookRouter,
   siteRouter,
+  gradeRouter,
 
   {
     path: '/example',
