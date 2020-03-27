@@ -78,9 +78,6 @@ export default {
     }
   },
   methods: {
-    created() {
-      alert('sdkjskj')
-    },
     handleSetTableChartData(type) {
       if (type !== 'jumpRouter') {
         this.tableData = tableData[type]
