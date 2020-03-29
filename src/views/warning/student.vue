@@ -5,7 +5,7 @@
 
     <el-row style="background:#fff;padding:16px 16px 16px;margin-bottom:32px;">
       <el-tag effect="plain" style="margin-bottom:16px;">当月预警情况</el-tag>
-      <el-table :data="tableData" border style="width: 100%">
+      <el-table :data="tableData" border style="width: 100%" @cell-click="personMessage">
         <el-table-column prop="xm" label="姓名" />
         <el-table-column prop="xh" label="学号" />
         <el-table-column prop="xy" label="学院" />
@@ -30,7 +30,7 @@
       <el-tag effect="plain">当月预警波动</el-tag>
       <line-chart :chart-data="lineChartData" @yearList="popUp" />
     </el-row>
-
+    <!-- 这是详情弹出框 -->
     <el-dialog title="详情" :visible.sync="oneLineVisible">
       <el-table :data="tableData" border style="width: 100%">
         <el-table-column prop="xm" label="姓名" />
@@ -52,15 +52,20 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+    <!-- 这是学生信息弹出框 -->
+    <el-dialog title="学生信息" :visible.sync="personVisible" width="45%">
+      <person-message :table-data="personData" :table-style="{ width:'800px' }" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
+import PersonMessage from '@/components/personMessage/index'
 
 const tableData = {
-  // 数据的话，就在页面初始化的时候都请求进来，然后再点击折线图的时候就根据日期去找然后加载出来
+  // 数据的话，就在页面初始化的时候都请求进来，然后再点击，获取日期来加载
   todayNew: [
     { xm: '***', xh: '***', xy: '***', zy: '***', lxdh: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
     { xm: '***', xh: '***', xy: '***', zy: '***', lxdh: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
@@ -94,18 +99,36 @@ export default {
   name: 'Student',
   components: {
     PanelGroup,
-    LineChart
+    LineChart,
+    PersonMessage
   },
   data() {
     return {
       tableData: tableData.todayNew,
       oneLineVisible: false,
+      personVisible: false,
       lineChartData: {
         expectedData: [100, 120, 161, 134, 105, 160, 165],
-        dateData: ['2020-03-05', '2020-03-06', '2020-03-07', '2020-03-08', '2020-03-09', '2020-03-10', '2020-03-11'] }
+        dateData: ['2020-03-05', '2020-03-06', '2020-03-07', '2020-03-08', '2020-03-09', '2020-03-10', '2020-03-11'] },
+      personData: [
+        { key: '姓名', value: '李鲲' },
+        { key: '学号', value: '2016081098' },
+        { key: '班级', value: '软工163班' },
+        { key: '专业', value: '软件工程' },
+        { key: '学院', value: '软件工程' },
+        { key: '类别', value: '本科' },
+        { key: '入学年月', value: '2016-09' },
+        { key: '入学年级', value: '2016' },
+        { key: '学制', value: '4' },
+        { key: '宿舍', value: '4-3028' },
+        { key: '联系电话', value: '18708392376' },
+        { key: '辅导员', value: '梁淑真' }
+      ]
     }
   },
   methods: {
+    // TODO:要写柱状图
+    // TODO:要写弹出框
     handleSetTableChartData(type) {
       this.tableData = tableData[type]
     },
@@ -113,6 +136,15 @@ export default {
     popUp(month) {
     //   alert(month)
       this.oneLineVisible = true
+    },
+    personMessage(row, column, event, cell) {
+      if (column.property === 'xh') {
+        this.personVisible = true
+      }
+      console.log(row)
+      console.log(column)
+      console.log(event)
+      console.log(cell)
     }
   }
 }
