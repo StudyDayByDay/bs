@@ -9,6 +9,7 @@
           <div class="card-panel-text">
             今日新增预警
           </div>
+          <!-- FIXME：要把数值进行传入操作 -->
           <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />
         </div>
       </div>

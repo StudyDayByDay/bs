@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-editor-container">
-
+    <!-- FIXME：最上面要加一个学院的分级框 -->
     <panel-group @handleSetTableChartData="handleSetTableChartData" />
 
     <el-row style="background:#fff;padding:16px 16px 16px;margin-bottom:32px;">
@@ -103,6 +103,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <!-- FIXME：还是尽量把学生详情加个图片 -->
   </div>
 </template>
 

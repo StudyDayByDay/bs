@@ -94,10 +94,10 @@ export default {
           }
         },
         legend: {
-          data: ['借阅数']
+          data: ['预警数']
         },
         series: [{
-          name: '借阅数', itemStyle: {
+          name: '预警数', itemStyle: {
             normal: {
               color: '#00DDDD',
               lineStyle: {
