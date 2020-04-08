@@ -13,7 +13,7 @@
         </el-table-column>
         <el-table-column>
           <template slot="header" slot-scope="scope">
-            <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+            <el-input v-model="search" size="mini" placeholder="输入场地名称搜索" />
           </template>
           <template slot-scope="scope">
             <!-- 这里禁用的判断不能用三目表达式，用了无效 -->
@@ -61,6 +61,9 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <!-- FIXME：查看详情没有做，用于查看这个场地的详情 -->
+    <!-- FIXME：自己的申请没有做，用于查看自己的申请情况 -->
+    <!-- FIXME：管理员咋办 -->
   </div>
 </template>
 

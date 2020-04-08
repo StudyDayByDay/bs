@@ -68,6 +68,7 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+    <!-- FIXME：有必要把照片加上 -->
     <!-- 这是学生信息弹出框 -->
     <el-dialog title="学生信息" :visible.sync="personVisible" width="45%">
       <person-message :table-data="personData" :table-style="{ width:'800px' }" />

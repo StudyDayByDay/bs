@@ -18,6 +18,7 @@
         <el-table-column prop="xy" label="学院" />
         <el-table-column prop="zy" label="专业" />
         <el-table-column prop="yjsm" label="预警数目">
+          <!-- FIXME：预警科目要用红色 -->
           <template slot-scope="scope">
             <el-link type="primary">{{ scope.row.yjsm }}</el-link>
           </template>

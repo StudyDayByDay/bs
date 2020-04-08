@@ -22,7 +22,7 @@
       <el-tag effect="plain">近一年借阅情况</el-tag>
       <line-chart :chart-data="lineChartData" @yearList="popUp" />
     </el-row>
-
+    <!-- FIXME: 在没有数据的时候表格会给出提示吗 -->
     <el-dialog title="详情" :visible.sync="oneLineVisible">
       <el-table :data="tableData" border style="width: 100%">
         <el-table-column prop="name" label="图书名称" />
@@ -36,7 +36,7 @@
         </el-table-column>
       </el-table>
     </el-dialog>
-    <!-- FIXME：写一个因为逾期而交罚款的选项 -->
+    <!-- FIXME：写一个因为逾期而交罚款的选项，而且要有对于逾期缴费的统计板块 -->
   </div>
 </template>
 

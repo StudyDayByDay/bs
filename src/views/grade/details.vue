@@ -4,6 +4,7 @@
       <el-select v-model="xnxq" clearable placeholder="请选择学年学期" @change="changeValue">
         <el-option v-for="item in xnxqs" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
+      <!-- FIXME：在表格内要有对于学分的总计 -->
       <el-table :data="tableData" stripe style="width: 100%">
         <el-table-column prop="xnxq" label="学年学期" />
         <el-table-column prop="kcdm" label="课程代码" />
