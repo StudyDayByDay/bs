@@ -18,10 +18,26 @@
           <template slot-scope="scope">
             <!-- 这里禁用的判断不能用三目表达式，用了无效 -->
             <el-button size="mini" type="primary" :disabled="scope.row.zt === '使用中'" @click="handleEdit(scope.$index, scope.row)">申请</el-button>
-            <el-button size="mini" type="success" @click="handleDelete(scope.$index, scope.row)">查看详情</el-button>
+            <el-popover placement="bottom" :title="scope.row.cdmc" width="200" trigger="click" content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+              <el-button slot="reference" size="mini" type="success">查看详情</el-button>
+            </el-popover>
           </template>
         </el-table-column>
       </el-table>
+    </el-row>
+
+    <!-- 自己的申请情况 -->
+    <el-row style="background:#fff;padding:16px 16px 16px;margin-bottom:32px;">
+      <el-tag effect="plain" style="margin-bottom:16px;">我的申请</el-tag>
+      <el-collapse>
+        <el-collapse-item v-for="(item, index) in items" :key="index" :title="item.title" :name="index">
+          <el-steps :active="item.active">
+            <el-step title="已申请" icon="el-icon-s-order" />
+            <el-step title="处理中" icon="el-icon-s-custom" />
+            <el-step title="处理结果" :description="item.description" :icon="item.icon" />
+          </el-steps>
+        </el-collapse-item>
+      </el-collapse>
     </el-row>
     <el-dialog title="申请场地" :visible.sync="increaseFromVisible">
       <el-form ref="form" :model="form" label-width="80px">
@@ -61,9 +77,6 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <!-- FIXME：查看详情没有做，用于查看这个场地的详情 -->
-    <!-- FIXME：自己的申请没有做，用于查看自己的申请情况 -->
-    <!-- FIXME：管理员咋办 -->
   </div>
 </template>
 
@@ -78,6 +91,13 @@ export default {
         { cdmc: '音频训练室', cdbh: 'ADF2***', cdwz: '***', zt: '使用中' },
         { cdmc: '跆拳道教室', cdbh: 'ADF21', cdwz: '***', zt: '空闲' },
         { cdmc: '电子实验室', cdbh: 'ADF21', cdwz: '***', zt: '使用中' }],
+      items: [
+        { title: '创新实验室', active: 3, description: '申请成功！', icon: 'el-icon-success' },
+        { title: '大气研究院', active: 3, description: '申请失败！', icon: 'el-icon-error' },
+        { title: '音频训练室', active: 3, description: '申请成功！', icon: 'el-icon-success' },
+        { title: '跆拳道教室', active: 3, description: '申请成功！', icon: 'el-icon-success' },
+        { title: '电子实验室', active: 3, description: '申请成功！', icon: 'el-icon-success' }],
+      activeNames: ['0'],
       search: '',
       increaseFromVisible: false,
       form: {
@@ -110,6 +130,9 @@ export default {
     },
     applicationSubmit(forName) {
       this.increaseFromVisible = false
+    },
+    handleChange(val) {
+      console.log(val)
     }
   }
 }

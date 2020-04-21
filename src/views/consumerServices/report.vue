@@ -21,6 +21,22 @@
       <el-tag effect="plain">近一年消费</el-tag>
       <nice-chart :chart-data="chart" @yearList="niceChartList" />
     </el-row>
+
+    <el-row :gutter="12" style="background:#fff;padding:16px 16px 16px;margin-bottom:20px;">
+      <el-col :span="6">
+        <el-card shadow="hover">卡内余额</el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card shadow="hover">电费余额</el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card shadow="hover">水费余额</el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card shadow="hover">充值</el-card>
+      </el-col>
+    </el-row>
+
     <el-dialog title="详情" :visible.sync="oneLineVisible">
       <el-table :data="oneLineData">
         <el-table-column property="type" label="消费类型" />
@@ -36,7 +52,6 @@
       </el-table>
     </el-dialog>
     <!-- TODO:少了充值处理 -->
-    <!-- TODO:写一个老师的学生们消费报告 -->
   </div>
 </template>
 
