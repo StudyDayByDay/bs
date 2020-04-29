@@ -15,6 +15,13 @@
             <el-tag :type="scope.row.status === '已归还' ? 'success' : 'danger'" disable-transitions>{{ scope.row.status }}</el-tag>
           </template>
         </el-table-column>
+        <el-table-column prop="yqqk" label="逾期情况">
+          <template slot-scope="scope">
+            <el-tag v-show="scope.row.status === '已归还'" :type="scope.row.yqqk === '未逾期' ? 'success' : 'danger'" disable-transitions>{{ scope.row.yqqk }}</el-tag>
+            <el-tag v-show="scope.row.status === '已归还'" :type="scope.row.yqqk === '未逾期' ? 'success' : 'danger'" disable-transitions>{{ scope.row.je }}</el-tag>
+            <el-button type="primary" size="mini" :disabled="scope.row.yqqk === '未逾期' || scope.row.status === '未归还'" @click="payment(scope.$index, scope.row)">缴费</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-row>
 
@@ -22,7 +29,6 @@
       <el-tag effect="plain">近一年借阅情况</el-tag>
       <line-chart :chart-data="lineChartData" @yearList="popUp" />
     </el-row>
-    <!-- FIXME: 在没有数据的时候表格会给出提示吗 -->
     <el-dialog title="详情" :visible.sync="oneLineVisible">
       <el-table :data="tableData" border style="width: 100%">
         <el-table-column prop="name" label="图书名称" />
@@ -36,7 +42,6 @@
         </el-table-column>
       </el-table>
     </el-dialog>
-    <!-- FIXME：写一个因为逾期而交罚款的选项，而且要有对于逾期缴费的统计板块，而且对于列表里的要显示是否逾期，如果逾期则显示余额 -->
   </div>
 </template>
 
@@ -46,20 +51,20 @@ import LineChart from './components/LineChart'
 
 const tableData = {
   borrowed: [
-    { name: '白夜行1', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还' },
-    { name: '白夜行2', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还' },
-    { name: '白夜行3', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还' },
-    { name: '白夜行4', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还' },
-    { name: '白夜行5', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还' }
+    { name: '白夜行1', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '逾期', je: 1.7 },
+    { name: '白夜行2', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '未逾期', je: 0 },
+    { name: '白夜行3', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '逾期', je: 1.9 },
+    { name: '白夜行4', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还', yqqk: '', je: 0 },
+    { name: '白夜行5', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还', yqqk: '', je: 0 }
   ],
   returned: [
-    { name: '白夜行1', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还' },
-    { name: '白夜行2', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还' },
-    { name: '白夜行3', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还' }
+    { name: '白夜行1', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '逾期', je: 1.7 },
+    { name: '白夜行2', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '未逾期', je: 0 },
+    { name: '白夜行3', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '逾期', je: 1.9 }
   ],
   notReturned: [
-    { name: '白夜行4', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还' },
-    { name: '白夜行5', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还' }
+    { name: '白夜行4', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还', yqqk: '', je: 0 },
+    { name: '白夜行5', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还', yqqk: '', je: 0 }
   ]
 }
 
@@ -104,6 +109,32 @@ export default {
     popUp(month) {
     //   alert(month)
       this.oneLineVisible = true
+    },
+    // 缴费处理
+    payment(index, row) {
+      this.$confirm('请选择支付方式', '支付', {
+        confirmButtonText: '余额支付',
+        cancelButtonText: '微信支付',
+        type: 'success'
+      }).then(() => {
+        if (this.getUserAmount() > row.je) {
+          this.$message({
+            type: 'success',
+            message: '处理成功!'
+          })
+          // FIXME: 这里处理完成之后要把数据写入到数据库，同时，要重新请求data数据
+        }
+        // FIXME：到时候直接取出该用户的余额进行判断：若大于扣除费用就直接扣；若不是，则弹出框提示余额多少+余额不足请先充值然后跳转到充值界面
+      }).catch(() => {
+        // this.$message({
+        //   type: 'info',
+        //   message: '已取消'
+        // })
+      })
+    },
+    // 取出用户余额处理
+    getUserAmount() {
+      return 11
     }
   }
 }

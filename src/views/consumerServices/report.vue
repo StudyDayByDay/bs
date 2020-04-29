@@ -22,21 +22,18 @@
       <nice-chart :chart-data="chart" @yearList="niceChartList" />
     </el-row>
 
-    <el-row :gutter="12" style="background:#fff;padding:16px 16px 16px;margin-bottom:20px;">
-      <el-col :span="6">
-        <el-card shadow="hover">卡内余额</el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="hover">电费余额</el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="hover">水费余额</el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="hover">充值</el-card>
-      </el-col>
-    </el-row>
+    <div class="float-button">
+      <el-button type="primary" icon="el-icon-edit" circle @click="balanceTableVisible = true">余额</el-button><br>
+      <el-button type="success" icon="el-icon-check" circle>充值</el-button>
+    </div>
 
+    <!-- 余额嵌套表格 -->
+    <el-dialog title="余额" :visible.sync="balanceTableVisible">
+      <el-table :data="balanceData">
+        <el-table-column property="type" label="类型" />
+        <el-table-column property="balance" label="余额" />
+      </el-table>
+    </el-dialog>
     <el-dialog title="详情" :visible.sync="oneLineVisible">
       <el-table :data="oneLineData">
         <el-table-column property="type" label="消费类型" />
@@ -89,6 +86,7 @@ export default {
   data() {
     return {
       lineChartData: lineChartData.education,
+      balanceTableVisible: false,
       tableData: [{
         date: '2016-05-02',
         money: '193',
@@ -105,6 +103,10 @@ export default {
         date: '2016-05-03',
         money: '110',
         type: '饮食'
+      }],
+      balanceData: [{
+        type: '余额',
+        balance: '193'
       }],
       chart: {
         // consumeData, rechargeData, dateData
@@ -189,6 +191,12 @@ export default {
     padding: 16px 16px 0;
     margin-bottom: 32px;
   }
+}
+
+.float-button {
+position: fixed;
+bottom: 50px;
+right: 50px;
 }
 
 @media (max-width:1024px) {
