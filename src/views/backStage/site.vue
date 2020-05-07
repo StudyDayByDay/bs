@@ -11,23 +11,23 @@
         prop="shzt"
         filter-placement="bottom-end"
         label="审核状态"
-        :filters="[{ text: '未审核', value: '未审核' }, { text: '审核通过', value: '审核通过' }, { text: '审核不通过', value: '审核不通过' }]"
+        :filters="[{ text: '未审核', value: '未审核' }, { text: '已审核', value: '已审核' }]"
         :filter-method="filterTag"
       >
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.shzt === '未审核'">{{ scope.row.shzt }}</el-tag>
-          <el-tag v-else-if="scope.row.shzt === '审核通过'" type="success">{{ scope.row.shzt }}</el-tag>
-          <el-tag v-else type="danger">{{ scope.row.shzt }}</el-tag>
+          <el-tag :type="scope.row.shzt === '已审核' ? 'success' : 'danger'">{{ scope.row.shzt }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="审核时间" prop="shsj" />
+      <el-table-column label="审核结果" prop="shjg" />
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="success" round @click="handleEdit(scope.$index, scope.row)">审核</el-button>
-          <el-button type="danger" round @click="handleDelete(scope.$index, scope.row)">撤销</el-button>
+          <el-button type="success" :disabled="scope.row.shzt === '已审核'" round @click="handleEdit(scope.$index, scope.row)">审核</el-button>
+          <el-button type="danger" :disabled="scope.row.shzt === '未审核'" round @click="handleDelete(scope.$index, scope.row)">撤销</el-button>
         </template>
       </el-table-column>
     </el-table>
+
     <el-dialog title="场地审核" :visible.sync="dialogFormVisible">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="审核结果">
@@ -66,7 +66,8 @@ export default {
         sqsj: '2020-03-04 14:39:15',
         sqyy: '学习',
         shzt: '未审核',
-        shsj: ''
+        shjg: '未审核',
+        shsj: '***'
       }, {
         cdmc: '大气实验室',
         cdwz: '第五实验楼2楼203',
@@ -74,7 +75,8 @@ export default {
         sqrxh: '2016081032',
         sqsj: '2020-03-04 14:39:15',
         sqyy: '学习',
-        shzt: '审核通过',
+        shzt: '已审核',
+        shjg: '审核通过',
         shsj: '2020-03-04 21:27:11'
       },
       {
@@ -84,7 +86,8 @@ export default {
         sqrxh: '2016081032',
         sqsj: '2020-03-04 14:39:15',
         sqyy: '学习',
-        shzt: '审核不通过',
+        shzt: '已审核',
+        shjg: '审核不通过',
         shsj: '2020-03-04 21:27:11'
       }],
       dialogFormVisible: false,
@@ -98,37 +101,29 @@ export default {
   },
   methods: {
     handleEdit(index, row) {
-      if (row.shzt === '未审核') {
-        this.dialogFormVisible = true
-        // 把当前处理的索引和行对象保存
-        this.listIndex = index
-      } else {
-        this.$message.error('已审核，若要重新处理请先撤销')
-      }
+      this.dialogFormVisible = true
+      // 把当前处理的索引和行对象保存
+      this.listIndex = index
     },
     handleDelete(index, row) {
-      if (row.shzt === '未审核') {
-        this.$message.error('未审核，请进行审核操作')
-      } else {
-        this.$confirm('此操作将撤销审核结果, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          // 撤销操作
-          this.tableData[index].shzt = '未审核'
-          this.tableData[index].shsj = ''
-          this.$message({
-            type: 'success',
-            message: '撤销成功!'
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          })
+      this.$confirm('此操作将撤销审核结果, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 撤销操作
+        this.tableData[index].shzt = '未审核'
+        this.tableData[index].shsj = ''
+        this.$message({
+          type: 'success',
+          message: '撤销成功!'
         })
-      }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
     },
     onSubmit() {
       this.dialogFormVisible = false
