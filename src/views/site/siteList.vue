@@ -143,6 +143,7 @@ export default {
         this.collapseData = perms
       }))
     },
+    // FIXME：查看详情接口还没搞
     // 申请tableData数据
     getTableData() {
       return axios.get('tableData的接口')
