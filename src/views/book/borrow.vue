@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-editor-container">
     <el-row style="background:#fff;padding:16px 16px 16px;margin-bottom:32px;">
-      <h1>{{ $route.params.bookId }}</h1>
+      <h1>{{ $route.params.bookName }}</h1>
       <!-- <h1>{{ $route.query.bookId }}</h1> -->
       <el-tag effect="plain" style="margin-bottom:16px;">搜索情况</el-tag>
       <el-table :data="tableData" border style="width: 100%">
@@ -21,6 +21,7 @@
 
 <script>
 import { bookList } from '@/api/book'
+import axios from 'axios'
 export default {
   name: 'Borrow',
   data() {
@@ -41,13 +42,25 @@ export default {
   //   }
   // },
   created() {
+    // 到时候在这里进行请求并把数据赋值
+    console.log(this.$route.params.bookName)
+    // 到时候把mock数据删了
     bookList().then(response => {
       console.log('sjjjjjjjjjjjjj')
       this.tableData = response.data.items
     }).catch((e) => {})
   },
   methods: {
-
+    // 根据传入book名称来
+    getBookDataTable() {
+      axios.get('***', {
+        params: {
+          bookName: this.$route.params.bookName
+        }
+      }).then(function(response) {
+        // console.log(response.data.^^^)
+      })
+    }
   }
 }
 </script>

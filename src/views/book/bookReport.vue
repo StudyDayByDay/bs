@@ -48,25 +48,7 @@
 <script>
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
-
-const tableData = {
-  borrowed: [
-    { name: '白夜行1', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '逾期', je: 1.7 },
-    { name: '白夜行2', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '未逾期', je: 0 },
-    { name: '白夜行3', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '逾期', je: 1.9 },
-    { name: '白夜行4', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还', yqqk: '', je: 0 },
-    { name: '白夜行5', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还', yqqk: '', je: 0 }
-  ],
-  returned: [
-    { name: '白夜行1', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '逾期', je: 1.7 },
-    { name: '白夜行2', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '未逾期', je: 0 },
-    { name: '白夜行3', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '逾期', je: 1.9 }
-  ],
-  notReturned: [
-    { name: '白夜行4', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还', yqqk: '', je: 0 },
-    { name: '白夜行5', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还', yqqk: '', je: 0 }
-  ]
-}
+import axios from 'axios'
 
 export default {
   name: 'BookReport',
@@ -76,17 +58,61 @@ export default {
   },
   data() {
     return {
-      tableData: tableData.borrowed,
+      tableData: null,
+      dialog: null,
+      nodeTableData: null,
+      totalTableData: {
+        borrowed: [
+          { name: '白夜行1', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '逾期', je: 1.7 },
+          { name: '白夜行2', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '未逾期', je: 0 },
+          { name: '白夜行3', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '逾期', je: 1.9 },
+          { name: '白夜行4', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还', yqqk: '', je: 0 },
+          { name: '白夜行5', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还', yqqk: '', je: 0 }
+        ],
+        returned: [
+          { name: '白夜行1', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '逾期', je: 1.7 },
+          { name: '白夜行2', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '未逾期', je: 0 },
+          { name: '白夜行3', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '已归还', yqqk: '逾期', je: 1.9 }
+        ],
+        notReturned: [
+          { name: '白夜行4', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还', yqqk: '', je: 0 },
+          { name: '白夜行5', number: 'QD231', borrowTime: '2020-03-13 16:30:45', returnTime: '2020-03-13 16:30:45', status: '未归还', yqqk: '', je: 0 }
+        ]
+      },
       oneLineVisible: false,
       lineChartData: {
         expectedData: [100, 120, 161, 134, 105, 160, 165],
         dateData: ['2020-03-05', '2020-03-06', '2020-03-07', '2020-03-08', '2020-03-09', '2020-03-10', '2020-03-11'] }
     }
   },
+  created() {
+    this.tableData = this.totalTableData.borrowed
+    // 获取初始化数据
+    // this.initTableData()
+  },
   methods: {
+    // 这个地方是请求去获取table里面的数据
+    initTableData() {
+      axios.get('').then(function(response) {
+        // 这里要把PanelGroup的数字传过去
+        this.totalTableData = response.data.shuju
+      })
+    },
+    // 这个是获取节点数据的请求方法，与下面的popup是一个意思，到时候实际操作时，把popup里的内容移植过来
+    getNodeTable(month) {
+      // this.oneLineVisible = true
+      axios.get('', {
+        params: {
+          month: month
+        }}).then(function(response) {
+        // 将请求来的数据赋值给
+        // this.nodeTableData = response.data.**
+        console.log('sdsdsd')
+      })
+    },
     handleSetTableChartData(type) {
       if (type !== 'jumpRouter') {
-        this.tableData = tableData[type]
+        this.tableData = this.totalTableData[type]
       } else {
         this.$prompt('请输入查询的书名', '提示', {
           confirmButtonText: '确定',
@@ -96,7 +122,7 @@ export default {
         }).then(({ value }) => {
           // this.$router.push({ path: '/book/borrow', query: { bookId: value }})
           // 由于动态路由也是传递params的，所以在 this.$router.push() 方法中path不能和params一起使用，否则params将无效。需要用name来指定页面。
-          this.$router.push({ name: 'Borrow', params: { bookId: value }})
+          this.$router.push({ name: 'Borrow', params: { bookName: value }})
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -112,24 +138,24 @@ export default {
     },
     // 缴费处理
     payment(index, row) {
-      this.$confirm('请选择支付方式', '支付', {
-        confirmButtonText: '余额支付',
-        cancelButtonText: '微信支付',
+      this.$confirm('确定进行支付？', '支付', {
+        confirmButtonText: '确定支付',
+        cancelButtonText: '取消支付',
         type: 'success'
       }).then(() => {
         if (this.getUserAmount() > row.je) {
           this.$message({
             type: 'success',
-            message: '处理成功!'
+            message: '支付成功!'
           })
           // FIXME: 这里处理完成之后要把数据写入到数据库，同时，要重新请求data数据
         }
         // FIXME：到时候直接取出该用户的余额进行判断：若大于扣除费用就直接扣；若不是，则弹出框提示余额多少+余额不足请先充值然后跳转到充值界面
       }).catch(() => {
-        // this.$message({
-        //   type: 'info',
-        //   message: '已取消'
-        // })
+        this.$message({
+          type: 'info',
+          message: '已取消支付'
+        })
       })
     },
     // 取出用户余额处理

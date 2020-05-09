@@ -56,6 +56,15 @@ export default {
   components: {
     CountTo
   },
+  // FIXME:到时候这里根据后端具体返回的数据来定义类型
+  props: {
+    numData: {
+      type: Object,
+      default() {
+        return null
+      }
+    }
+  },
   methods: {
     handleSetTableChartData(type) {
       this.$emit('handleSetTableChartData', type)
