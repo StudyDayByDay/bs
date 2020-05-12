@@ -22,6 +22,12 @@ const gradeRouter = {
       name: 'Text',
       component: () => import('@/views/grade/text'),
       meta: { title: '代码草稿' }
+    },
+    {
+      path: 'jtTbale',
+      name: 'JtTable',
+      component: () => import('@//views/grade/jtTable'),
+      meta: { title: '江泰表格联系' }
     }
   ]
 }

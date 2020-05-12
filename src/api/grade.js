@@ -6,3 +6,10 @@ export function gradeList() {
     methods: 'get'
   })
 }
+
+export function jtList() {
+  return request({
+    url: '/vue-element-admin/grade/jtList',
+    methods: 'get'
+  })
+}
