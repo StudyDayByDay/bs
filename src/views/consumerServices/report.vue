@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-editor-container">
 
-    <panel-group @handleSetLineChartData="handleSetLineChartData" />
+    <panel-group :sum-value="sumValue" @handleSetLineChartData="handleSetLineChartData" />
 
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <el-tag effect="plain">近一个月消费</el-tag>
@@ -11,9 +11,16 @@
     <el-row style="background:#fff;padding:16px 16px 16px;margin-bottom:32px;">
       <el-tag effect="plain" style="margin-bottom:16px;">近一个月消费TOP10</el-tag>
       <el-table :data="tableData" border style="width: 100%">
-        <el-table-column prop="money" label="消费金额" />
-        <el-table-column prop="type" label="消费类型" />
-        <el-table-column prop="date" label="消费时间" />
+        <el-table-column prop="transactionAmount" label="消费金额" />
+        <el-table-column prop="transactionType" label="消费类型">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.transactionType === 'shoppings'">购物</el-tag>
+            <el-tag v-else-if="scope.row.transactionType === 'purchases'" type="success">充值</el-tag>
+            <el-tag v-else-if="scope.row.transactionType === 'education'" type="warning">教育</el-tag>
+            <el-tag v-else type="danger">饮食</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="transactionDate" label="消费时间" />
       </el-table>
     </el-row>
 
@@ -56,25 +63,7 @@
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
 import NiceChart from './components/NiceChart'
-
-const lineChartData = {
-  education: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    dateData: ['2020-03-05', '2020-03-06', '2020-03-07', '2020-03-08', '2020-03-09', '2020-03-10', '2020-03-11']
-  },
-  diet: {
-    expectedData: [200, 192, 120, 144, 160, 130, 140],
-    dateData: ['2020-03-05', '2020-03-06', '2020-03-07', '2020-03-08', '2020-03-09', '2020-03-10', '2020-03-11']
-  },
-  purchases: {
-    expectedData: [80, 100, 121, 104, 105, 90, 100],
-    dateData: ['2020-03-05', '2020-03-06', '2020-03-07', '2020-03-08', '2020-03-09', '2020-03-10', '2020-03-11']
-  },
-  shoppings: {
-    expectedData: [130, 140, 141, 142, 145, 150, 160],
-    dateData: ['2020-03-05', '2020-03-06', '2020-03-07', '2020-03-08', '2020-03-09', '2020-03-10', '2020-03-11']
-  }
-}
+import axios from 'axios'
 
 export default {
   name: 'DashboardAdmin',
@@ -85,25 +74,11 @@ export default {
   },
   data() {
     return {
-      lineChartData: lineChartData.education,
+      totalLineData: null,
+      lineChartData: null,
       balanceTableVisible: false,
-      tableData: [{
-        date: '2016-05-02',
-        money: '193',
-        type: '教育'
-      }, {
-        date: '2016-05-04',
-        money: '153',
-        type: '充值'
-      }, {
-        date: '2016-05-01',
-        money: '129',
-        type: '购物'
-      }, {
-        date: '2016-05-03',
-        money: '110',
-        type: '饮食'
-      }],
+      tableData: [],
+      sumValue: null,
       balanceData: [{
         type: '余额',
         balance: '193'
@@ -153,9 +128,13 @@ export default {
       }]
     }
   },
+  created() {
+    this.initData()
+  },
   methods: {
     handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
+      this.lineChartData = this.totalLineData[type]
+      // 应该在这个函数里面把type传到图表里面去并且把lineChartData数据更新
       this.type = type
     },
     // 获取点击第一个图表时的日期
@@ -163,11 +142,30 @@ export default {
       // this.type用于第一个图表传进去类型
       // alert(value)
       this.oneLineVisible = true
+      // 利用这里的type和传过来的日期去axios求得数据
     },
     // // 获取点击第二个图表时的日期、类型
     niceChartList(value) {
       // alert(value.time + value.type)
       this.twoLineVisible = true
+    },
+    initData() {
+      var vm = this
+      // 试一下并发请求
+      axios.all([this.getLineData(), this.getTopTenData()]).then(axios.spread(function(acct, perms) {
+        console.log(acct)
+        console.log(perms)
+        vm.tableData = perms.data.top10
+        vm.sumValue = acct.data.sumValue
+        vm.totalLineData = acct.data.typeMap
+        vm.lineChartData = vm.totalLineData.education
+      }))
+    },
+    getLineData() {
+      return axios.get('http://localhost:8080/card/transactions/selectMonth')
+    },
+    getTopTenData() {
+      return axios.get('http://localhost:8080/card/transactions/getTop10')
     }
   }
 }

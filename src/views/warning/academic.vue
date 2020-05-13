@@ -29,6 +29,7 @@
     <el-dialog title="学生信息" :visible.sync="personVisible" width="45%">
       <person-message :table-data="personData" :table-style="{ width:'800px' }" />
     </el-dialog>
+    <!-- FIXME:这里要给出班级选择 -->
     <!-- 这是课程详情弹出框 -->
     <el-dialog title="学生信息" :visible.sync="gradeVisible">
       <el-table :data="gradeData" border style="width: 100%">
