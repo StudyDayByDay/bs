@@ -19,7 +19,7 @@
         <el-table-column prop="spnsl" label="审批年水量" />
         <el-table-column label="提交">
           <template slot-scope="scope">
-            <el-button type="success" icon="el-icon-check" circle @click="handleCheck(scope.$index, scope.row)" />
+            <el-button type="success" icon="el-icon-upload" circle @click="handleCheck(scope.$index, scope.row)" />
           </template>
         </el-table-column>
         <el-table-column label="修改">
@@ -33,7 +33,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+      <el-pagination class="page" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </el-row>
     <!-- 提交数据弹出框 -->
     <el-dialog title="上传" :visible.sync="dialogVisible" width="30%">
@@ -62,6 +62,24 @@
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog title="修改" :visible.sync="editVisible">
+      <el-steps :active="active" finish-status="success" simple style="margin-top: 20px">
+        <el-step title="步骤 1" />
+        <el-step title="步骤 2" />
+        <el-step title="步骤 3" />
+        <el-step title="步骤 3" />
+        <el-step title="步骤 3" />
+      </el-steps>
+      <div v-if="active==0"><h1>第一步</h1></div>
+      <div v-if="active==1"><h1>第二步</h1></div>
+      <div v-if="active==2"><h1>第三步</h1></div>
+      <div v-if="active==3"><h1>第四步</h1></div>
+      <div v-if="active==4"><h1>第五步</h1></div>
+      <el-button v-if="active==1 || active==2 || active==3 || active==4" style="margin-top: 12px;" @click="prev">上一步</el-button>
+      <el-button v-if="active==0 || active==1 || active==2 || active==3" style="margin-top: 12px;" @click="next">下一步</el-button>
+      <el-button v-if="active==4" style="margin-top: 12px;" @click="submit">提交</el-button>
+    </el-dialog>
   </div>
 </template>
 
@@ -76,6 +94,7 @@ export default {
       year: null,
       currentPage: 1,
       dialogVisible: false,
+      editVisible: false,
       siteValue: '',
       options: [{
         value: '选项1',
@@ -84,7 +103,8 @@ export default {
         value: '选项2',
         label: '郫都区水资源处'
       }],
-      fileList: []
+      fileList: [],
+      active: 0
     }
   },
   created() {
@@ -127,6 +147,9 @@ export default {
     handleCheck(index, row) {
       this.dialogVisible = true
     },
+    handleEdit(index, row) {
+      this.editVisible = true
+    },
     handleDelete(index, row) {
       this.$confirm('此操作将永久删除, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -156,6 +179,13 @@ export default {
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
+    },
+    next() {
+      if (this.active++ > 4) this.active = 5
+    },
+    prev() {
+      --this.active
+      if (this.active < 0) this.active = 0
     }
   }
 }
@@ -182,5 +212,8 @@ export default {
 }
 .uploadt{
   margin: 10px;
+}
+.page{
+  float: right;
 }
 </style>

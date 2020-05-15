@@ -17,6 +17,7 @@ import bookRouter from './modules/book'
 import siteRouter from './modules/site'
 import gradeRouter from './modules/grade'
 import warningRouter from './modules/warning'
+import jtRouter from './modules/jt'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -201,6 +202,7 @@ export const asyncRoutes = [
   siteRouter,
   gradeRouter,
   warningRouter,
+  jtRouter,
 
   {
     path: '/example',
