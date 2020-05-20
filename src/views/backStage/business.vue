@@ -99,6 +99,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -147,6 +148,12 @@ export default {
       }
     }
   },
+  created() {
+    // 初始化表格数据
+    axios.get('初始化请求表格数据').then(function(response) {
+      this.tableData = response.data
+    })
+  },
   methods: {
     handleEdit(index, row) {
       this.form.mc = this.tableData[index].sjmc
@@ -159,6 +166,10 @@ export default {
     },
     handleDelete(index, row) {
       this.tableData.splice(index, 1)
+      // 删除操作
+      // axios.delete("/ehrReferralObjPro", {params: param})
+      //     .then(function(response) {
+      //       }
     },
     handleSubmit() {
       var index = this.listIndex
@@ -167,6 +178,29 @@ export default {
       this.tableData[index].fzr = this.form.fzr
       this.tableData[index].zcsj = this.form.date1 + ' ' + this.form.date2
       this.handleFormVisible = false
+      // // 编辑提交
+      // axios({
+      //   url: '/user',
+      //   method: 'post',
+      //   data: {
+      //     mc: this.form.mc,
+      //     wz: this.form.wz,
+      //     fzr: this.form.fzr,
+      //     date1: this.form.date1,
+      //     date2: this.form.date2
+      //   },
+      //   transformRequest: [function(data) {
+      //     // Do whatever you want to transform the data
+      //     let ret = ''
+      //     for (let it in data) {
+      //       ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+      //     }
+      //     return ret
+      //   }],
+      //   headers: {
+      //     'Content-Type': 'application/x-www-form-urlencoded'
+      //   }
+      // })
     },
     increase() {
       this.form.mc = ''
@@ -191,6 +225,29 @@ export default {
           return false
         }
       })
+      // // 提交数据
+      // axios({
+      //   url: '/user',
+      //   method: 'post',
+      //   data: {
+      //     mc: this.form.mc,
+      //     wz: this.form.wz,
+      //     fzr: this.form.fzr,
+      //     date1: this.form.date1,
+      //     date2: this.form.date2
+      //   },
+      //   transformRequest: [function(data) {
+      //     // Do whatever you want to transform the data
+      //     let ret = ''
+      //     for (let it in data) {
+      //       ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+      //     }
+      //     return ret
+      //   }],
+      //   headers: {
+      //     'Content-Type': 'application/x-www-form-urlencoded'
+      //   }
+      // })
     }
   }
 }

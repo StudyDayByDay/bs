@@ -59,7 +59,7 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.barData)
     },
-    setOptions({ warningData, removeData } = {}) {
+    setOptions({ departmentData, warningData, removeData } = {}) {
       this.chart.setOption({
         tooltip: {
           trigger: 'axis',
@@ -76,7 +76,7 @@ export default {
         },
         xAxis: [{
           type: 'category',
-          data: ['计算机学院', '外国语学院', '大气学院', '会计学院', '多媒体学院', '马克思学院', '化工学院'],
+          data: departmentData,
           axisTick: {
             alignWithLabel: true
           }

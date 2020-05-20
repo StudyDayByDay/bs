@@ -51,6 +51,7 @@
 
 <script>
 import PersonMessage from '@/components/personMessage/index'
+import axios from 'axios'
 export default {
   name: 'Academic',
   components: {
@@ -89,18 +90,16 @@ export default {
         label: '会计学院'
       }],
       tableData: [
-        { xm: '***', xh: '***', nj: '***', xy: '***', zy: '***', yjsm: '3' },
-        { xm: '***', xh: '***', nj: '***', xy: '***', zy: '***', yjsm: '3' },
-        { xm: '***', xh: '***', nj: '***', xy: '***', zy: '***', yjsm: '3' },
-        { xm: '***', xh: '***', nj: '***', xy: '***', zy: '***', yjsm: '3' },
-        { xm: '***', xh: '***', nj: '***', xy: '***', zy: '***', yjsm: '3' }
+        { xm: '李鲲', xh: '2016081098', nj: '2016', xy: '软件工程', zy: '软件工程', yjsm: '3' },
+        { xm: '张三', xh: '2016083746', nj: '2016', xy: '软件工程', zy: '软件工程', yjsm: '5' },
+        { xm: '李四', xh: '2016082323', nj: '2016', xy: '软件工程', zy: '软件工程', yjsm: '2' },
+        { xm: '王五', xh: '2016087634', nj: '2016', xy: '软件工程', zy: '软件工程', yjsm: '1' },
+        { xm: '刘念', xh: '2016089832', nj: '2016', xy: '软件工程', zy: '软件工程', yjsm: '4' }
       ],
       gradeData: [
-        { kmmc: '***', xf: '***', rkls: '***', kcsj: '***', zt: '挂科' },
-        { kmmc: '***', xf: '***', rkls: '***', kcsj: '***', zt: '待补考' },
-        { kmmc: '***', xf: '***', rkls: '***', kcsj: '***', zt: '重修' },
-        { kmmc: '***', xf: '***', rkls: '***', kcsj: '***', zt: '重修' },
-        { kmmc: '***', xf: '***', rkls: '***', kcsj: '***', zt: '重修' }
+        { kmmc: '《大气研究》', xf: '3', rkls: '张孝全', kcsj: '2017~2018学年第一学期', zt: '挂科' },
+        { kmmc: '《电子信息技术》', xf: '2', rkls: '李思静', kcsj: '2017~2018学年第二学期', zt: '待补考' },
+        { kmmc: '《商务英语》', xf: '1', rkls: '王文丽', kcsj: '2018~2019学年第一学期', zt: '重修' }
       ],
       personData: [
         { key: '姓名', value: '李鲲' },
@@ -118,6 +117,12 @@ export default {
       ]
     }
   },
+  // created() {
+  //   axios.get('****').then(function(respone) {
+  //     // 数据处理
+  //     console.log(respone)
+  //   })
+  // },
   methods: {
     // 页面加载时需要拿到学年学期的数据
     // 在选项变换时，需要改变tableData的数据

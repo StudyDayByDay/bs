@@ -110,35 +110,36 @@ import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
 import PersonMessage from '@/components/personMessage/index'
 import BarChart from './components/BarChart'
+import axios from 'axios'
 
 const tableData = {
   // 数据的话，就在页面初始化的时候都请求进来，然后再点击，获取日期来加载
   todayNew: [
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' }
+    { xm: '李鲲', xh: '2016081098', zhsj: '2020-05-18 20:51:51', zhdd: '一食堂', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '张三', xh: '2016092732', zhsj: '2020-05-18 20:51:51', zhdd: '第一田径场', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '李四', xh: '2016082314', zhsj: '2020-05-18 20:51:51', zhdd: '大气研究院', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '王五', xh: '2016083421', zhsj: '2020-05-18 20:51:51', zhdd: '二食堂', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '曹刘', xh: '2016087634', zhsj: '2020-05-18 20:51:51', zhdd: '中心花园', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' }
   ],
   monthLost: [
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '已解除' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '已解除' }
+    { xm: '李鲲', xh: '2016081098', zhsj: '2020-05-18 20:51:51', zhdd: '一食堂', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '张三', xh: '2016092732', zhsj: '2020-05-18 20:51:51', zhdd: '第一田径场', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '李四', xh: '2016082314', zhsj: '2020-05-18 20:51:51', zhdd: '大气研究院', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '王五', xh: '2016083421', zhsj: '2020-05-18 20:51:51', zhdd: '二食堂', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '曹刘', xh: '2016087634', zhsj: '2020-05-18 20:51:51', zhdd: '中心花园', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '张明', xh: '2016083746', zhsj: '2020-05-18 20:51:51', zhdd: '银杏大道', yjsj: '2020-05-19 20:52:15', jcyjsj: '2020-05-20 20:57:26', yjzt: '已解除' },
+    { xm: '王生', xh: '2016083623', zhsj: '2020-05-18 20:51:51', zhdd: '小竹林', yjsj: '2020-05-19 20:52:15', jcyjsj: '2020-05-20 20:57:35', yjzt: '已解除' }
   ],
   MonthOk: [
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '已解除' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '已解除' }
+    { xm: '张明', xh: '2016083746', zhsj: '2020-05-18 20:51:51', zhdd: '银杏大道', yjsj: '2020-05-19 20:52:15', jcyjsj: '2020-05-20 20:57:26', yjzt: '已解除' },
+    { xm: '王生', xh: '2016083623', zhsj: '2020-05-18 20:51:51', zhdd: '小竹林', yjsj: '2020-05-19 20:52:15', jcyjsj: '2020-05-20 20:57:35', yjzt: '已解除' }
   ],
   MonthStill: [
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' },
-    { xm: '***', xh: '***', zhsj: '***', zhdd: '***', yjsj: '***', jcyjsj: '***', yjzt: '预警中' }
+    { xm: '李鲲', xh: '2016081098', zhsj: '2020-05-18 20:51:51', zhdd: '一食堂', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '张三', xh: '2016092732', zhsj: '2020-05-18 20:51:51', zhdd: '第一田径场', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '李四', xh: '2016082314', zhsj: '2020-05-18 20:51:51', zhdd: '大气研究院', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '王五', xh: '2016083421', zhsj: '2020-05-18 20:51:51', zhdd: '二食堂', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' },
+    { xm: '曹刘', xh: '2016087634', zhsj: '2020-05-18 20:51:51', zhdd: '中心花园', yjsj: '2020-05-19 20:52:15', jcyjsj: '', yjzt: '预警中' }
   ]
 }
 
@@ -187,7 +188,29 @@ export default {
       }
     }
   },
+  // created() {
+  //   axios.all([this.getFourData(), this.getTableData(), this.getLineData(), this.getHistogramData()])
+  //     .then(axios.spread(function(a, b, c, d) {
+  //       // 数据处理
+  //     }))
+  // },
   methods: {
+    // 请求第四个表头数据的方法
+    getFourData() {
+      return axios.get('****')
+    },
+    // 请求table的方法
+    getTableData() {
+      return axios.get('****')
+    },
+    // 请求折线图的方法
+    getLineData() {
+      return axios.get('****')
+    },
+    // 请求柱状图的方法
+    getHistogramData() {
+      return axios.get('****')
+    },
     // TODO:要写柱状图
     handleSetTableChartData(type) {
       this.tableData = tableData[type]

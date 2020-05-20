@@ -114,6 +114,10 @@ export default {
         // 撤销操作
         this.tableData[index].shzt = '未审核'
         this.tableData[index].shsj = ''
+        // 进行删除一条数据操作
+        // axios.delete("/ehrReferralObjPro", {params: param})
+        //     .then(function(response) {
+        //       }
         this.$message({
           type: 'success',
           message: '撤销成功!'
@@ -131,6 +135,29 @@ export default {
       var index = this.listIndex
       this.tableData[index].shzt = this.form.shjg
       this.tableData[index].shsj = this.form.date1 + ' ' + this.form.date2
+      // 进行插入数据操作
+      // axios({
+      //   url: '/user',
+      //   method: 'post',
+      //   data: {
+      //     mc: this.form.mc,
+      //     wz: this.form.wz,
+      //     fzr: this.form.fzr,
+      //     date1: this.form.date1,
+      //     date2: this.form.date2
+      //   },
+      //   transformRequest: [function(data) {
+      //     // Do whatever you want to transform the data
+      //     let ret = ''
+      //     for (let it in data) {
+      //       ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+      //     }
+      //     return ret
+      //   }],
+      //   headers: {
+      //     'Content-Type': 'application/x-www-form-urlencoded'
+      //   }
+      // })
       this.listIndex = null
       this.form.shjg = ''
       this.form.date1 = ''

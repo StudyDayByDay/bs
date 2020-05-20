@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="40" class="panel-group">
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetTableChartData('todayNew')">
+      <div class="card-panel" @click="handleSetTableChartData('dayNewWarning')">
         <div class="card-panel-icon-wrapper icon-people">
           <svg-icon icon-class="month" class-name="card-panel-icon" />
         </div>
@@ -10,12 +10,12 @@
             今日新增预警
           </div>
           <!-- FIXME：要把数值进行传入操作 -->
-          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="sumValue.dayNewWarning" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetTableChartData('monthLost')">
+      <div class="card-panel" @click="handleSetTableChartData('mothWarning')">
         <div class="card-panel-icon-wrapper icon-message">
           <svg-icon icon-class="today" class-name="card-panel-icon" />
         </div>
@@ -23,12 +23,12 @@
           <div class="card-panel-text">
             当月预警
           </div>
-          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="sumValue.mothWarning" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetTableChartData('MonthOk')">
+      <div class="card-panel" @click="handleSetTableChartData('monthLiftWarning')">
         <div class="card-panel-icon-wrapper icon-money">
           <svg-icon icon-class="notLock" class-name="card-panel-icon" />
         </div>
@@ -36,12 +36,12 @@
           <div class="card-panel-text">
             当月已解除预警
           </div>
-          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="sumValue.monthLiftWarning" :duration="3200" class="card-panel-num" />
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetTableChartData('MonthStill')">
+      <div class="card-panel" @click="handleSetTableChartData('monthNotLiftWarning')">
         <div class="card-panel-icon-wrapper icon-shopping">
           <svg-icon icon-class="lock" class-name="card-panel-icon" />
         </div>
@@ -49,7 +49,7 @@
           <div class="card-panel-text">
             当月未解除预警
           </div>
-          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="sumValue.monthNotLiftWarning" :duration="3200" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -62,6 +62,12 @@ import CountTo from 'vue-count-to'
 export default {
   components: {
     CountTo
+  },
+  props: {
+    sumValue: {
+      type: Object,
+      required: true
+    }
   },
   methods: {
     handleSetTableChartData(type) {
