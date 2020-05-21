@@ -146,11 +146,7 @@ export default {
         { key: '学院', value: '软件工程' },
         { key: '类别', value: '本科' },
         { key: '入学年月', value: '2016-09' },
-        { key: '入学年级', value: '2016' },
-        { key: '学制', value: '4' },
-        { key: '宿舍', value: '4-3028' },
-        { key: '联系电话', value: '18708392376' },
-        { key: '辅导员', value: '梁淑真' }
+        { key: '联系电话', value: '18708392376' }
       ],
       form: {
         xsxm: '',
@@ -166,7 +162,8 @@ export default {
         createdBy: '',
         createdUserId: '',
         createdAt: '',
-        description: ''
+        description: '',
+        type: ''
       },
       barData: {
         departmentData: [],
@@ -233,7 +230,26 @@ export default {
       this.oneLineVisible = true
     },
     personMessage(row, column, event, cell) {
+      console.log(row)
       if (column.property === 'xh') {
+        axios.get('http://localhost:8080/lost/getPortrait', {
+          params: {
+            xh: row.xh
+          }
+        })
+          .then(function(response) {
+            this.personData[0].value = response.data.student.xm
+            this.personData[1].value = response.data.student.xh
+            this.personData[2].value = response.data.student.bjdm
+            this.personData[3].value = response.data.student.zydm
+            this.personData[4].value = response.data.student.yxdm
+            this.personData[5].value = response.data.student.xslb
+            this.personData[6].value = response.data.student.rxny
+            this.personData[7].value = response.data.student.dh
+          })
+          .catch(function(error) {
+            console.log(error)
+          })
         this.personVisible = true
       }
       // console.log(row)
@@ -265,6 +281,7 @@ export default {
         this.feedBackRecords.createdUserId = this.form.gh
         this.feedBackRecords.createdAt = this.form.sj
         this.feedBackRecords.description = this.form.yy
+        this.feedBackRecords.type = 'lost'
         axios.post('http://localhost:8080/lost/liftWarning', this.feedBackRecords)
           .then((res) => { return res })
           .catch((err) => { return err })
