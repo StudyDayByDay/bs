@@ -74,7 +74,12 @@ export default {
   },
   data() {
     return {
-      totalLineData: null,
+      totalLineData: {
+        diet: { expectedData: [], dateData: [] },
+        education: { expectedData: [], dateData: [] },
+        purchases: { expectedData: [], dateData: [] },
+        shoppings: { expectedData: [], dateData: [] }
+      },
       lineChartData: null,
       balanceTableVisible: false,
       tableData: [],
@@ -129,7 +134,17 @@ export default {
     }
   },
   created() {
-    this.initData()
+    var vm = this
+    // 试一下并发请求
+    axios.all([this.getLineData(), this.getTopTenData()]).then(axios.spread(function(acct, perms) {
+      console.log(acct)
+      console.log(perms)
+      vm.tableData = perms.data.top10
+      vm.sumValue = acct.data.sumValue
+      // FIXME:数据处理不正确
+      // vm.handleEchartsData(acct.data.typeDate, vm)
+      vm.lineChartData = vm.totalLineData.education
+    }))
   },
   methods: {
     handleSetLineChartData(type) {
@@ -149,17 +164,24 @@ export default {
       // alert(value.time + value.type)
       this.twoLineVisible = true
     },
-    initData() {
-      var vm = this
-      // 试一下并发请求
-      axios.all([this.getLineData(), this.getTopTenData()]).then(axios.spread(function(acct, perms) {
-        console.log(acct)
-        console.log(perms)
-        vm.tableData = perms.data.top10
-        vm.sumValue = acct.data.sumValue
-        vm.totalLineData = acct.data.typeMap
-        vm.lineChartData = vm.totalLineData.education
-      }))
+    // 处理echarts图数据
+    handleEchartsData(data, vm) {
+      console.log('sdsadsddsad' + data)
+      for (var i = 0, len = data.length; i < len; i++) {
+        if (data[i].transactionType === 'diet') {
+          vm.totalLineData.diet.expectedData.push(data[i].transactionType.transactionAmount)
+          vm.totalLineData.diet.dateData.push(data[i].transactionType.transactionDate)
+        } else if (data[i].transactionType === 'education') {
+          vm.totalLineData.education.expectedData.push(data[i].transactionType.transactionAmount)
+          vm.totalLineData.education.dateData.push(data[i].transactionType.transactionDate)
+        } else if (data[i].transactionType === 'purchases') {
+          vm.totalLineData.purchases.expectedData.push(data[i].transactionType.transactionAmount)
+          vm.totalLineData.purchases.dateData.push(data[i].transactionType.transactionDate)
+        } else {
+          vm.totalLineData.shoppings.expectedData.push(data[i].transactionType.transactionAmount)
+          vm.totalLineData.shoppings.dateData.push(data[i].transactionType.transactionDate)
+        }
+      }
     },
     getLineData() {
       return axios.get('http://localhost:8080/card/transactions/selectMonth')

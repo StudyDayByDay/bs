@@ -139,14 +139,14 @@ export default {
         expectedData: [],
         dateData: [] },
       personData: [
-        { key: '姓名', value: '李鲲' },
-        { key: '学号', value: '2016081098' },
-        { key: '班级', value: '软工163班' },
-        { key: '专业', value: '软件工程' },
-        { key: '学院', value: '软件工程' },
-        { key: '类别', value: '本科' },
-        { key: '入学年月', value: '2016-09' },
-        { key: '联系电话', value: '18708392376' }
+        { key: '姓名', value: '' },
+        { key: '学号', value: '' },
+        { key: '班级', value: '' },
+        { key: '专业', value: '' },
+        { key: '学院', value: '' },
+        { key: '类别', value: '' },
+        { key: '入学年月', value: '' },
+        { key: '联系电话', value: '' }
       ],
       form: {
         xsxm: '',
@@ -230,6 +230,7 @@ export default {
       this.oneLineVisible = true
     },
     personMessage(row, column, event, cell) {
+      var vm = this
       console.log(row)
       if (column.property === 'xh') {
         axios.get('http://localhost:8080/lost/getPortrait', {
@@ -238,14 +239,14 @@ export default {
           }
         })
           .then(function(response) {
-            this.personData[0].value = response.data.student.xm
-            this.personData[1].value = response.data.student.xh
-            this.personData[2].value = response.data.student.bjdm
-            this.personData[3].value = response.data.student.zydm
-            this.personData[4].value = response.data.student.yxdm
-            this.personData[5].value = response.data.student.xslb
-            this.personData[6].value = response.data.student.rxny
-            this.personData[7].value = response.data.student.dh
+            vm.personData[0].value = response.data.student.xm
+            vm.personData[1].value = response.data.student.xh
+            vm.personData[2].value = response.data.student.bjdm
+            vm.personData[3].value = response.data.student.zydm
+            vm.personData[4].value = response.data.student.yxdm
+            vm.personData[5].value = response.data.student.xslb
+            vm.personData[6].value = response.data.student.rxny
+            vm.personData[7].value = response.data.student.dh
           })
           .catch(function(error) {
             console.log(error)
@@ -270,6 +271,7 @@ export default {
     },
     // 提交表单
     removeHandle(formName) {
+      var vm = this
       this.$confirm('确认解除预警吗, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -289,7 +291,7 @@ export default {
           type: 'success',
           message: '删除成功!'
         })
-        this.getInitialData()
+        vm.getInitialData()
         this.removeVisible = false
       }).catch(() => {
         this.$message({

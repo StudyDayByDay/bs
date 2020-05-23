@@ -1,12 +1,16 @@
 <template>
   <div class="dashboard-editor-container">
     <el-row style="background:#fff;padding:16px 16px 16px;margin-bottom:32px;">
-      <el-select v-model="xy" clearable placeholder="请选择学院" @change="changeXy">
+      <el-select v-model="xy" clearable placeholder="请选择学院">
         <el-option v-for="item in xys" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-      <el-select v-model="xnxq" clearable placeholder="请选择学年学期" @change="changeXq">
-        <el-option v-for="item in xnxqs" :key="item.value" :label="item.label" :value="item.value" />
+      <el-select v-model="xn" clearable placeholder="请选择学年">
+        <el-option v-for="item in xns" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
+      <el-select v-model="xq" clearable placeholder="请选择学期">
+        <el-option v-for="item in xqs" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+      <el-button type="primary" round @click="serach()">查询</el-button>
       <el-table :data="tableData" stripe style="width: 100%" @cell-click="taxTable">
         <el-table-column prop="xm" label="姓名" />
         <el-table-column prop="xh" label="学号">
@@ -61,79 +65,108 @@ export default {
     return {
       personVisible: false,
       gradeVisible: false,
-      xnxq: '',
+      xq: '',
+      xn: '',
       xy: '',
-      xnxqs: [{
-        value: '第一学期',
-        label: '2016-2017~1'
+      xns: [{
+        value: '2016',
+        label: '2016'
       }, {
-        value: '第二学期',
-        label: '2016-2017~2'
+        value: '2017',
+        label: '2017'
       }, {
-        value: '第三学期',
-        label: '2017-2018~1'
+        value: '2018',
+        label: '2018'
       }, {
-        value: '第四学期',
-        label: '2017-2018~2'
+        value: '2019',
+        label: '2019'
+      }],
+      xqs: [{
+        value: '1',
+        label: '第一学期'
+      }, {
+        value: '2',
+        label: '第二学期'
       }],
       xys: [{
-        value: '软件工程学院',
+        value: '软件工程',
         label: '软件工程学院'
       }, {
-        value: '计算机学院',
+        value: '计算机',
         label: '计算机学院'
       }, {
-        value: '外国语学院',
+        value: '外国语',
         label: '外国语学院'
       }, {
-        value: '会计学院',
+        value: '会计',
         label: '会计学院'
       }],
-      tableData: [
-        { xm: '李鲲', xh: '2016081098', nj: '2016', xy: '软件工程', zy: '软件工程', yjsm: '3' },
-        { xm: '张三', xh: '2016083746', nj: '2016', xy: '软件工程', zy: '软件工程', yjsm: '5' },
-        { xm: '李四', xh: '2016082323', nj: '2016', xy: '软件工程', zy: '软件工程', yjsm: '2' },
-        { xm: '王五', xh: '2016087634', nj: '2016', xy: '软件工程', zy: '软件工程', yjsm: '1' },
-        { xm: '刘念', xh: '2016089832', nj: '2016', xy: '软件工程', zy: '软件工程', yjsm: '4' }
-      ],
-      gradeData: [
-        { kmmc: '《大气研究》', xf: '3', rkls: '张孝全', kcsj: '2017~2018学年第一学期', zt: '挂科' },
+      tableData: [],
+      /*
+      ,
         { kmmc: '《电子信息技术》', xf: '2', rkls: '李思静', kcsj: '2017~2018学年第二学期', zt: '待补考' },
         { kmmc: '《商务英语》', xf: '1', rkls: '王文丽', kcsj: '2018~2019学年第一学期', zt: '重修' }
+      */
+      gradeData: [
+        { kmmc: '《大气研究》', xf: '3', rkls: '张孝全', kcsj: '2016~2017学年第一学期', zt: '挂科' }
       ],
       personData: [
-        { key: '姓名', value: '李鲲' },
-        { key: '学号', value: '2016081098' },
-        { key: '班级', value: '软工163班' },
-        { key: '专业', value: '软件工程' },
-        { key: '学院', value: '软件工程' },
-        { key: '类别', value: '本科' },
-        { key: '入学年月', value: '2016-09' },
-        { key: '入学年级', value: '2016' },
-        { key: '学制', value: '4' },
-        { key: '宿舍', value: '4-3028' },
-        { key: '联系电话', value: '18708392376' },
-        { key: '辅导员', value: '梁淑真' }
+        { key: '姓名', value: '' },
+        { key: '学号', value: '' },
+        { key: '班级', value: '' },
+        { key: '专业', value: '' },
+        { key: '学院', value: '' },
+        { key: '类别', value: '' },
+        { key: '入学年月', value: '' },
+        { key: '联系电话', value: '' }
       ]
     }
   },
-  // created() {
-  //   axios.get('****').then(function(respone) {
-  //     // 数据处理
-  //     console.log(respone)
-  //   })
-  // },
+  created() {
+    this.initData('软件工程', '2016', '1')
+  },
   methods: {
-    // 页面加载时需要拿到学年学期的数据
-    // 在选项变换时，需要改变tableData的数据
-    changeXq() {
-      alert(this.xnxq)
+    initData(xy, xn, xq) {
+      var vm = this
+      axios.get('http://localhost:8080/grade/returnTableData', {
+        params: {
+          xy: xy,
+          xn: xn,
+          xq: xq
+        }
+      })
+        .then(function(response) {
+          vm.tableData = response.data.tableData
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
     },
-    changeXy() {
-      alert(this.xnxq)
+    serach() {
+      console.log('asdjkasj')
+      this.initData(this.xy, this.xn, this.xq)
     },
     taxTable(row, column, event, cell) {
+      var vm = this
       if (column.property === 'xh') {
+        axios.get('http://localhost:8080/lost/getPortrait', {
+          params: {
+            xh: row.xh
+          }
+        })
+          .then(function(response) {
+            vm.personData[0].value = response.data.student.xm
+            vm.personData[1].value = response.data.student.xh
+            vm.personData[2].value = response.data.student.bjdm
+            vm.personData[3].value = response.data.student.zydm
+            vm.personData[4].value = response.data.student.yxdm
+            vm.personData[5].value = response.data.student.xslb
+            vm.personData[6].value = response.data.student.rxny
+            vm.personData[7].value = response.data.student.dh
+          })
+          .catch(function(error) {
+            console.log(error)
+          })
         this.personVisible = true
       } else if (column.property === 'yjsm') {
         this.gradeVisible = true
