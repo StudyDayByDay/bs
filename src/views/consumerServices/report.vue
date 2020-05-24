@@ -29,30 +29,18 @@
       <nice-chart :chart-data="chart" @yearList="niceChartList" />
     </el-row>
 
-    <div class="float-button">
-      <el-button type="primary" icon="el-icon-edit" circle @click="balanceTableVisible = true">余额</el-button><br>
-      <el-button type="success" icon="el-icon-check" circle>充值</el-button>
-    </div>
-
-    <!-- 余额嵌套表格 -->
-    <el-dialog title="余额" :visible.sync="balanceTableVisible">
-      <el-table :data="balanceData">
-        <el-table-column property="type" label="类型" />
-        <el-table-column property="balance" label="余额" />
-      </el-table>
-    </el-dialog>
     <el-dialog title="详情" :visible.sync="oneLineVisible">
       <el-table :data="oneLineData">
-        <el-table-column property="type" label="消费类型" />
-        <el-table-column property="money" label="消费金额" />
-        <el-table-column property="date" label="消费时间" />
+        <el-table-column property="transactionType" label="消费类型" />
+        <el-table-column property="transactionAmount" label="消费金额" />
+        <el-table-column property="transactionDate" label="消费时间" />
       </el-table>
     </el-dialog>
     <el-dialog title="详情" :visible.sync="twoLineVisible">
       <el-table :data="twoLineData">
-        <el-table-column property="type" label="类型" />
-        <el-table-column property="money" label="金额" />
-        <el-table-column property="date" label="时间" />
+        <el-table-column property="transactionType" label="消费类型" />
+        <el-table-column property="transactionAmount" label="消费金额" />
+        <el-table-column property="transactionDate" label="消费时间" />
       </el-table>
     </el-dialog>
     <!-- TODO:少了充值处理 -->
@@ -74,16 +62,18 @@ export default {
   },
   data() {
     return {
+      // 未处理的初始数据
+      typeData: [],
       totalLineData: {
         diet: { expectedData: [], dateData: [] },
         education: { expectedData: [], dateData: [] },
         purchases: { expectedData: [], dateData: [] },
         shoppings: { expectedData: [], dateData: [] }
       },
-      lineChartData: null,
+      lineChartData: {},
       balanceTableVisible: false,
       tableData: [],
-      sumValue: null,
+      sumValue: {},
       balanceData: [{
         type: '余额',
         balance: '193'
@@ -97,40 +87,8 @@ export default {
       type: '',
       oneLineVisible: false,
       twoLineVisible: false,
-      oneLineData: [{
-        date: '2016-05-02',
-        money: '193',
-        type: '教育'
-      }, {
-        date: '2016-05-04',
-        money: '153',
-        type: '充值'
-      }, {
-        date: '2016-05-01',
-        money: '129',
-        type: '购物'
-      }, {
-        date: '2016-05-03',
-        money: '110',
-        type: '饮食'
-      }],
-      twoLineData: [{
-        date: '2016-05-02',
-        money: '193',
-        type: '教育'
-      }, {
-        date: '2016-05-04',
-        money: '153',
-        type: '充值'
-      }, {
-        date: '2016-05-01',
-        money: '129',
-        type: '购物'
-      }, {
-        date: '2016-05-03',
-        money: '110',
-        type: '饮食'
-      }]
+      oneLineData: [],
+      twoLineData: []
     }
   },
   created() {
@@ -141,10 +99,9 @@ export default {
       console.log(perms)
       vm.tableData = perms.data.top10
       vm.sumValue = acct.data.sumValue
-      // FIXME:数据处理不正确
-      // vm.handleEchartsData(acct.data.typeDate, vm)
-      vm.lineChartData = vm.totalLineData.education
+      vm.handleEchartsData(acct.data.typeDate)
     }))
+    this.lineChartData = this.totalLineData.education
   },
   methods: {
     handleSetLineChartData(type) {
@@ -154,8 +111,13 @@ export default {
     },
     // 获取点击第一个图表时的日期
     panelGroup(value) {
-      // this.type用于第一个图表传进去类型
-      // alert(value)
+      this.oneLineData = []
+      console.log('llllllllllll' + this.typeData)
+      for (var j = 0, len = this.typeData.length; j < len; j++) {
+        if (this.typeData[j].transactionDate === value && this.typeData[j].transactionType === this.type) {
+          this.oneLineData.push(this.typeData[j])
+        }
+      }
       this.oneLineVisible = true
       // 利用这里的type和传过来的日期去axios求得数据
     },
@@ -165,23 +127,28 @@ export default {
       this.twoLineVisible = true
     },
     // 处理echarts图数据
-    handleEchartsData(data, vm) {
-      console.log('sdsadsddsad' + data)
+    handleEchartsData(data) {
+      this.typeData = data
+      console.log(data)
+      console.log(data[0])
+      var vm = this
       for (var i = 0, len = data.length; i < len; i++) {
         if (data[i].transactionType === 'diet') {
-          vm.totalLineData.diet.expectedData.push(data[i].transactionType.transactionAmount)
-          vm.totalLineData.diet.dateData.push(data[i].transactionType.transactionDate)
+          console.log(data[i].transactionType)
+          vm.totalLineData.diet.expectedData.push(data[i].transactionAmount)
+          vm.totalLineData.diet.dateData.push(data[i].transactionDate)
         } else if (data[i].transactionType === 'education') {
-          vm.totalLineData.education.expectedData.push(data[i].transactionType.transactionAmount)
-          vm.totalLineData.education.dateData.push(data[i].transactionType.transactionDate)
+          vm.totalLineData.education.expectedData.push(data[i].transactionAmount)
+          vm.totalLineData.education.dateData.push(data[i].transactionDate)
         } else if (data[i].transactionType === 'purchases') {
-          vm.totalLineData.purchases.expectedData.push(data[i].transactionType.transactionAmount)
-          vm.totalLineData.purchases.dateData.push(data[i].transactionType.transactionDate)
+          vm.totalLineData.purchases.expectedData.push(data[i].transactionAmount)
+          vm.totalLineData.purchases.dateData.push(data[i].transactionDate)
         } else {
-          vm.totalLineData.shoppings.expectedData.push(data[i].transactionType.transactionAmount)
-          vm.totalLineData.shoppings.dateData.push(data[i].transactionType.transactionDate)
+          vm.totalLineData.shoppings.expectedData.push(data[i].transactionAmount)
+          vm.totalLineData.shoppings.dateData.push(data[i].transactionDate)
         }
       }
+      console.log(vm.totalLineData)
     },
     getLineData() {
       return axios.get('http://localhost:8080/card/transactions/selectMonth')
@@ -211,12 +178,6 @@ export default {
     padding: 16px 16px 0;
     margin-bottom: 32px;
   }
-}
-
-.float-button {
-position: fixed;
-bottom: 50px;
-right: 50px;
 }
 
 @media (max-width:1024px) {

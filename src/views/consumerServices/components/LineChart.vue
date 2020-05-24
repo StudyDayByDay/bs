@@ -61,7 +61,7 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
       this.chart.on('click', (params) => {
-        console.log(params)
+        console.log(params.name)
         this.$emit('monthList', params.name)
       })
     },
@@ -76,7 +76,7 @@ export default {
         },
         grid: {
           left: 10,
-          right: 10,
+          right: 50,
           bottom: 20,
           top: 30,
           containLabel: true
