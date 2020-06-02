@@ -28,17 +28,17 @@ export default {
     return {
       xnxq: '',
       xnxqs: [{
-        value: '第一学期',
-        label: '2016-2017~1'
+        value: '2016-2017-1',
+        label: '2016-2017-1'
       }, {
-        value: '第二学期',
-        label: '2016-2017~2'
+        value: '2016-2017-2',
+        label: '2016-2017-2'
       }, {
-        value: '第三学期',
-        label: '2017-2018~1'
+        value: '2017-2018-1',
+        label: '2017-2018-1'
       }, {
-        value: '第四学期',
-        label: '2017-2018~2'
+        value: '2017-2018-2',
+        label: '2017-2018-2'
       }],
       tableData: [
         // { xnxq: '2018-2019 1', kcdm: 'RJ034B1', kcmc: '计算机网络', kclb: '专业基础', xf: '3', pscj: '80', qmcj: '64', zpcj: '69', zzcj: '69', jd: '1.9' },
@@ -59,15 +59,20 @@ export default {
     }
   },
   created() {
+    // 这里要在后台请求数据过来
     gradeList().then(response => {
       console.log('sjjjjjjjjjjjjj')
       this.tableData = response.data.items
     }).catch((e) => {})
   },
   methods: {
+    async getTableData(xn, xq) {
+      // await const data = axios.post()
+    },
     // 页面加载时需要拿到学年学期的数据
     // 在选项变换时，需要改变tableData的数据
     changeValue() {
+      // 使用split把字符串分割传入函数进行取值
       alert(this.xnxq)
     }
   }
