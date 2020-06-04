@@ -33,28 +33,19 @@
       <el-dialog title="编辑商家" :visible.sync="handleFormVisible">
         <el-form ref="form" :model="form" label-width="80px">
           <el-form-item label="商家名称">
-            <el-input v-model="form.mc" />
+            <el-input v-model="form.sjmc" />
           </el-form-item>
           <el-form-item label="商家位置">
-            <el-select v-model="form.wz" placeholder="请选择位置">
-              <el-option label="位置一" value="位置一" />
-              <el-option label="位置二" value="位置二" />
-            </el-select>
+            <el-input v-model="form.sjwz" placeholder="请填写位置" clearable />
           </el-form-item>
           <el-form-item label="负责人">
             <el-input v-model="form.fzr" />
           </el-form-item>
-          <el-form-item label="注册时间">
-            <el-col :span="11">
-              <el-date-picker v-model="form.date1" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width: 100%;" />
-            </el-col>
-            <el-col class="line" :span="2">-</el-col>
-            <el-col :span="11">
-              <el-time-picker v-model="form.date2" placeholder="选择时间" value-format="HH:mm:ss" style="width: 100%;" />
-            </el-col>
+          <el-form-item label="更新时间">
+            <el-date-picker v-model="form.zcsj" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="handleSubmit">立即创建</el-button>
+            <el-button type="primary" @click="handleSubmit">立即修改</el-button>
             <el-button @click="handleFormVisible = false">取消</el-button>
           </el-form-item>
         </el-form>
@@ -62,31 +53,18 @@
     </el-row>
     <el-row>
       <el-dialog title="增加商家" :visible.sync="increaseFromVisible">
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-          <el-form-item label="商家名称" prop="mc">
-            <el-input v-model="form.mc" />
+        <el-form ref="form" :model="form" label-width="80px">
+          <el-form-item label="商家名称">
+            <el-input v-model="form.sjmc" />
           </el-form-item>
-          <el-form-item label="商家位置" prop="wz">
-            <el-select v-model="form.wz" placeholder="请选择位置">
-              <el-option label="位置一" value="位置一" />
-              <el-option label="位置二" value="位置二" />
-            </el-select>
+          <el-form-item label="商家位置">
+            <el-input v-model="form.sjwz" placeholder="请填写位置" clearable />
           </el-form-item>
-          <el-form-item label="负责人" prop="fzr">
+          <el-form-item label="负责人">
             <el-input v-model="form.fzr" />
           </el-form-item>
           <el-form-item label="注册时间">
-            <el-col :span="11">
-              <el-form-item prop="date1">
-                <el-date-picker v-model="form.date1" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width: 100%;" />
-              </el-form-item>
-            </el-col>
-            <el-col class="line" :span="2">&nbsp;</el-col>
-            <el-col :span="11">
-              <el-form-item prop="date2">
-                <el-time-picker v-model="form.date2" placeholder="选择时间" value-format="HH:mm:ss" style="width: 100%;" />
-              </el-form-item>
-            </el-col>
+            <el-date-picker v-model="form.zcsj" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="increaseSubmit('form')">立即创建</el-button>
@@ -103,151 +81,153 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      tableData: [{
-        sjmc: '王记冒菜',
-        sjwz: '一食堂一楼A1',
-        fzr: '王三顺',
-        zcsj: '2020-03-03 22:16:35'
-      }, {
-        sjmc: '四方小炒',
-        sjwz: '一食堂一楼B1',
-        fzr: '张三',
-        zcsj: '2020-03-03 22:16:35'
-      }, {
-        sjmc: '麻辣烫',
-        sjwz: '二食堂二楼C1',
-        fzr: '牛网',
-        zcsj: '2020-03-03 22:16:35'
-      }, {
-        sjmc: '麻辣香锅',
-        sjwz: '一食堂一楼D1',
-        fzr: '金三顺',
-        zcsj: '2020-03-03 22:16:35'
-      }],
+      tableData: [],
       form: {
-        mc: '',
-        wz: '',
+        merchantCode: '',
+        sjmc: '',
+        sjwz: '',
         fzr: '',
-        date1: '',
-        date2: ''
+        zcsj: ''
       },
       handleFormVisible: false,
       increaseFromVisible: false,
-      listIndex: null,
-      rules: {
-        mc: [
-          { required: true, message: '请输入商家名称', trigger: 'blur' },
-          { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' }
-        ],
-        wz: [
-          { required: true, message: '请选择位置', trigger: 'change' }
-        ],
-        fzr: [
-          { required: true, message: '请输入负责人姓名', trigger: 'blur' }
-        ]
-      }
+      listIndex: null
     }
   },
   created() {
-    // 初始化表格数据
-    axios.get('初始化请求表格数据').then(function(response) {
-      this.tableData = response.data
-    })
+    axios.defaults.timeout = 15000
+    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+    axios.defaults.withCredentials = true
+    this.getInitData()
   },
   methods: {
+    getInitData() {
+      var vm = this
+      // 初始化表格数据
+      axios.get('http://localhost:8080/card/merchants/selectAll').then(function(response) {
+        vm.tableData = response.data.lists
+      })
+    },
     handleEdit(index, row) {
-      this.form.mc = this.tableData[index].sjmc
-      this.form.wz = this.tableData[index].sjwz
+      this.form.merchantCode = this.tableData[index].merchantCode
+      this.form.sjmc = this.tableData[index].sjmc
+      this.form.sjwz = this.tableData[index].sjwz
       this.form.fzr = this.tableData[index].fzr
-      this.form.date1 = this.tableData[index].zcsj.split(' ')[0]
-      this.form.date2 = this.tableData[index].zcsj.split(' ')[1]
+      this.form.zcsj = this.tableData[index].zcsj
       this.listIndex = index
       this.handleFormVisible = true
     },
     handleDelete(index, row) {
-      this.tableData.splice(index, 1)
+      console.log(row)
+      // this.tableData.splice(index, 1)
+      var param = { merchantCode: row.merchantCode }
+      this.$confirm('确认删除吗, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
       // 删除操作
-      // axios.delete("/ehrReferralObjPro", {params: param})
-      //     .then(function(response) {
-      //       }
+        axios.delete('http://localhost:8080/card/merchants/delete', { params: param })
+          .then(res => {
+            if (res.data.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.getInitData()
+              this.handleFormVisible = false
+            } else {
+              this.$message.error('删除失败！！！')
+            }
+          }).catch(err => console.log(err))
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
     },
+    // 修改操作
     handleSubmit() {
-      var index = this.listIndex
-      this.tableData[index].sjmc = this.form.mc
-      this.tableData[index].sjwz = this.form.wz
-      this.tableData[index].fzr = this.form.fzr
-      this.tableData[index].zcsj = this.form.date1 + ' ' + this.form.date2
-      this.handleFormVisible = false
-      // // 编辑提交
-      // axios({
-      //   url: '/user',
-      //   method: 'post',
-      //   data: {
-      //     mc: this.form.mc,
-      //     wz: this.form.wz,
-      //     fzr: this.form.fzr,
-      //     date1: this.form.date1,
-      //     date2: this.form.date2
-      //   },
-      //   transformRequest: [function(data) {
-      //     // Do whatever you want to transform the data
-      //     let ret = ''
-      //     for (let it in data) {
-      //       ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-      //     }
-      //     return ret
-      //   }],
-      //   headers: {
-      //     'Content-Type': 'application/x-www-form-urlencoded'
-      //   }
-      // })
+      this.$confirm('确认修改吗, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        axios.post('http://localhost:8080/card/merchants/update', this.form)
+          .then((res) => {
+            if (res.data.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '修改成功!'
+              })
+              this.getInitData()
+              this.handleFormVisible = false
+            } else {
+              this.$message.error('修改失败！！！')
+            }
+          }).catch((err) => {
+            console.log('sdsd', err)
+          })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
     },
     increase() {
-      this.form.mc = ''
-      this.form.wz = ''
+      this.form.sjmc = ''
+      this.form.sjwz = ''
       this.form.fzr = ''
-      this.form.date1 = ''
-      this.form.date2 = ''
+      this.form.zcsj = ''
       this.increaseFromVisible = true
     },
+    // 生成三位随机数
+    getThreeNum() {
+      var num = ''
+      for (var i = 0; i < 3; i++) {
+        num += Math.floor(Math.random() * 10)
+      }
+      return num
+    },
+    // 新增
     increaseSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          var list = {}
-          list.sjmc = this.form.mc
-          list.sjwz = this.form.wz
-          list.fzr = this.form.fzr
-          list.zcsj = this.form.date1 + ' ' + this.form.date2
-          this.tableData.push(list)
-          this.increaseFromVisible = false
+          this.$confirm('确认新增吗, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.form.merchantCode = this.getThreeNum()
+            console.log(this.form)
+            axios.post('http://localhost:8080/card/merchants/insert', this.form)
+              .then((res) => {
+                if (res.data.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '新增商家成功!'
+                  })
+                  this.getInitData()
+                  this.increaseFromVisible = false
+                } else {
+                  this.$message.error('新增商家失败！！！')
+                }
+              }).catch((err) => {
+                console.log('sdsd', err)
+              })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            })
+          })
         } else {
-          console.log('error submit!!')
+          console.log('请检查格式!!!')
           return false
         }
       })
-      // // 提交数据
-      // axios({
-      //   url: '/user',
-      //   method: 'post',
-      //   data: {
-      //     mc: this.form.mc,
-      //     wz: this.form.wz,
-      //     fzr: this.form.fzr,
-      //     date1: this.form.date1,
-      //     date2: this.form.date2
-      //   },
-      //   transformRequest: [function(data) {
-      //     // Do whatever you want to transform the data
-      //     let ret = ''
-      //     for (let it in data) {
-      //       ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-      //     }
-      //     return ret
-      //   }],
-      //   headers: {
-      //     'Content-Type': 'application/x-www-form-urlencoded'
-      //   }
-      // })
     }
   }
 }
