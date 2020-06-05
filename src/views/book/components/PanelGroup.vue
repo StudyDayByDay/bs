@@ -9,7 +9,7 @@
           <div class="card-panel-text">
             已借阅
           </div>
-          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="sumValue.borrowed" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -22,7 +22,7 @@
           <div class="card-panel-text">
             已归还
           </div>
-          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="sumValue.returned" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -35,7 +35,7 @@
           <div class="card-panel-text">
             暂未归还
           </div>
-          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="sumValue.notReturned" :duration="3200" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -58,11 +58,9 @@ export default {
   },
   // FIXME:到时候这里根据后端具体返回的数据来定义类型
   props: {
-    numData: {
+    sumValue: {
       type: Object,
-      default() {
-        return null
-      }
+      required: true
     }
   },
   methods: {

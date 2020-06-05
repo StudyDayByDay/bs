@@ -42,6 +42,7 @@
       </div>
     </el-row>
 
+    <!-- FIXME:好像是点击图中坐标弹窗时，没有先清楚数组中的东西，所以数据不对应,其他也检查一下 -->
     <!-- 这是详情弹出框 -->
     <el-dialog title="详情" :visible.sync="oneLineVisible">
       <el-table :data="detailsData" border style="width: 100%" @cell-click="personMessage">

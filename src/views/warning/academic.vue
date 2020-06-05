@@ -128,7 +128,7 @@ export default {
   methods: {
     initData(xy, xn, xq) {
       var vm = this
-      axios.get('http://localhost:8080/grade/returnTableData', {
+      axios.get('http://localhost:8080/gradeWarning/returnTableData', {
         params: {
           xy: xy,
           xn: xn,
