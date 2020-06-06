@@ -12,13 +12,13 @@
           </template>
         </el-table-column>
         <el-table-column>
-          <template slot="header" slot-scope="scope">
+          <template slot="header">
             <el-input v-model="search" size="mini" placeholder="输入场地名称搜索" />
           </template>
           <template slot-scope="scope">
             <!-- 这里禁用的判断不能用三目表达式，用了无效 -->
-            <el-button size="mini" type="primary" :disabled="scope.row.zt === '使用中'" @click="handleEdit(scope.$index, scope.row)">申请</el-button>
-            <el-popover placement="bottom" :title="scope.row.cdmc" width="200" trigger="click" content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+            <el-button size="mini" type="primary" :disabled="scope.row.zt !== '空闲'" @click="handleEdit(scope.$index, scope.row)">申请</el-button>
+            <el-popover placement="bottom" :title="scope.row.cdmc" width="200" trigger="click" :content="scope.row.cdjs">
               <el-button slot="reference" size="mini" type="success">查看详情</el-button>
             </el-popover>
           </template>
@@ -57,12 +57,6 @@
               <el-date-picker v-model="form.date" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;" />
             </el-form-item>
           </el-col>
-          <!-- <el-col class="line" :span="2">&nbsp;</el-col>
-          <el-col :span="11">
-            <el-form-item prop="date2">
-              <el-date-picker v-model="form.date2" placeholder="选择结束时间" value-format="HH:mm:ss" style="width: 100%;" />
-            </el-form-item>
-          </el-col> -->
         </el-form-item>
         <el-form-item label="申请原由" prop="yy">
           <el-select v-model="form.yy" placeholder="请选择">
@@ -87,27 +81,28 @@ export default {
   name: 'SiteList',
   data() {
     return {
-      tableData: [
-        { cdmc: '创新实验室', cdbh: 'ADF21', cdwz: '***', zt: '使用中' },
-        { cdmc: '大气研究院', cdbh: 'ADF21', cdwz: '***', zt: '空闲' },
-        { cdmc: '音频训练室', cdbh: 'ADF2***', cdwz: '***', zt: '使用中' },
-        { cdmc: '跆拳道教室', cdbh: 'ADF21', cdwz: '***', zt: '空闲' },
-        { cdmc: '电子实验室', cdbh: 'ADF21', cdwz: '***', zt: '使用中' }],
-      collapseData: [
-        { title: '创新实验室', active: 3, description: '申请成功！', icon: 'el-icon-success' },
-        { title: '大气研究院', active: 3, description: '申请失败！', icon: 'el-icon-error' },
-        { title: '音频训练室', active: 3, description: '申请成功！', icon: 'el-icon-success' },
-        { title: '跆拳道教室', active: 3, description: '申请成功！', icon: 'el-icon-success' },
-        { title: '电子实验室', active: 3, description: '申请成功！', icon: 'el-icon-success' }],
+      tableData: [],
+      collapseData: [],
       activeNames: ['0'],
       search: '',
       increaseFromVisible: false,
       form: {
+        cdbh: 0,
         cdmc: '',
         sqr: '',
         xh: '',
         date: '',
         yy: ''
+      },
+      apply: {
+        sno: '',
+        card: '1',
+        siteId: '',
+        applyTime: '',
+        administratorId: '1',
+        handleTime: '',
+        handleStatus: '0',
+        description: ''
       },
       rules: {
         cdmc: [
@@ -129,29 +124,16 @@ export default {
     }
   },
   created() {
-    // bookList().then(response => {
-    //   console.log('sjjjjjjjjjjjjj')
-    //   this.tableData = response.data.items
-    // }).catch((e) => {})
+    var vm = this
+    axios.get('http://localhost:8080/site/selectsitevo').then(res => {
+      console.log('sdsdas', res)
+      vm.tableData = res.data.lists
+      vm.collapseData = res.data.applyLists
+    }).catch(err => {
+      console.log(err)
+    })
   },
   methods: {
-    // 初始化表格数据和自己的申请数据
-    initData() {
-      axios.all([this.getTableData(), this.getCollapseData()]).then(axios.spread(function(acct, perms) {
-        // 两个数据都请求到，估计请求过来还要处理
-        this.tableData = acct
-        this.collapseData = perms
-      }))
-    },
-    // FIXME：查看详情接口还没搞
-    // 申请tableData数据
-    getTableData() {
-      return axios.get('tableData的接口')
-    },
-    // 申请手风琴数据
-    getCollapseData() {
-      return axios.get('手风琴数据的接口')
-    },
     handleEdit(index, row) {
     //   console.log(index, row)
       this.form.sqr = ''
@@ -160,18 +142,41 @@ export default {
       this.form.yy = ''
       this.increaseFromVisible = true
       this.form.cdmc = this.tableData[index].cdmc
+      this.form.cdbh = this.tableData[index].cdbh
     },
     applicationSubmit(forName) {
       // this.increaseFromVisible = false
       this.$refs[forName].validate((valid) => {
         if (valid) {
-          // 在这里进行提交表单处理
-          // axios.post('***',this.form).then(function(response) {
-          //   console.log(response)
-          // }).catch(function(error) {
-          //   console.log(error)
-          // })
-          alert('sdsd')
+          this.$confirm('确定申请吗, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.apply.sno = this.form.xh
+            this.apply.siteId = this.form.cdbh
+            this.apply.applyTime = this.form.date[0] + ' ' + this.form.date[1]
+            this.apply.description = this.form.yy
+            console.log(this.apply)
+            // 插入操作
+            axios.post('http://localhost:8080/apply/insert', this.apply)
+              .then(res => {
+                if (res.data.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '已申请，待审核'
+                  })
+                  this.increaseFromVisible = false
+                } else {
+                  this.$message.error('申请失败！！！')
+                }
+              }).catch(err => console.log(err))
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            })
+          })
         } else {
           console.log('e')
           return false
