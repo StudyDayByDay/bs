@@ -17,6 +17,7 @@
         <el-table-column prop="zzcj" label="最终成绩" />
         <el-table-column prop="jd" label="绩点" />
       </el-table>
+      <el-pagination current-page="4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </el-row>
   </div>
 </template>

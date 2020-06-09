@@ -28,6 +28,7 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination current-page="4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </el-row>
     <el-row>
       <el-dialog title="编辑商家" :visible.sync="handleFormVisible">

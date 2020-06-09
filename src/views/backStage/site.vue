@@ -34,7 +34,7 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <el-pagination current-page="4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     <el-dialog title="场地审核" :visible.sync="dialogFormVisible">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="审核结果">
